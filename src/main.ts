@@ -1,20 +1,17 @@
+import { addProduct } from './ecommerce';
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+export {
+  addProduct,
+  addToCart,
+  removeFromCart,
+  calculateTotal,
+  clearCart,
+  applyShippingDiscount
+} from './ecommerce'
 
-
+document.getElementById('product-form')!.addEventListener("submit", (event) => {
+  event.preventDefault();
+  console.log(event.target)
+  addProduct("a", 1.0, 1)
+});
