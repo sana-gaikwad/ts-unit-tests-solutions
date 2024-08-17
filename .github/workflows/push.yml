@@ -36,6 +36,10 @@ jobs:
       - name: Build
         run: npm run build
       # Begin automated tests
+      - name: Test
+        run: npm run test
+      - name: Coverage
+        run: npm run coverage
       # End automated tests
   deploy:
     needs: test
