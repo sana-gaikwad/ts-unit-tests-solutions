@@ -1,11 +1,11 @@
-type Product = {
+export type Product = {
   id: string;
   price: number;
   stock: number;
 };
 
-const stock: Record<string, Product> = {};
-let cart: Record<string, number> = {};
+export const stock: Record<string, Product> = {};
+export let cart: Record<string, number> = {};
 
 /**
  * Adds a product to the store's inventory.

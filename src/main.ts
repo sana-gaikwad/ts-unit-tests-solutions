@@ -1,5 +1,7 @@
 import './style.css'
 import {
+  stock,
+  cart,
   addProduct,
   addToCart,
   removeFromCart,
@@ -8,171 +10,88 @@ import {
   applyShippingDiscount
 } from './ecommerce'
 
-class ProductList extends HTMLElement {
-  products: Element | null | undefined;
-  identifier: string;
+// ### Add products ###
+function renderProducts() {
+  let content = '';
+  Object.values(stock).forEach(p => {
+    content += `
+      <li value="${p.id}">
+        <p>Product ID: ${p.id}</p>
+        <p>Price: $${p.price}</p>
+        <p>Quantity: ${p.stock}</p>
+        <button class="add-to-cart">➕</button>
+      </li>
+    `
+  });
+  const target = document.querySelector('#products')!;
+  target.innerHTML = content;
 
-  constructor() {
-    // establish prototype chain
-    super();
-
-    // attaches shadow tree and returns shadow root reference
-    // https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
-    const shadow = this.attachShadow({ mode: 'open' });
-
-    // creating a container for the editable-list component
-    const productListContainer = document.createElement('div');
-
-    // get attribute values from getters
-    const title = this.title;
-    const addItemText = this.addItemText;
-    const listFields = this.fields;
-    this.identifier = self.crypto.randomUUID();
-
-    this.products = null;
-
-    // adding a class to our container for the sake of clarity
-    productListContainer.classList.add('editable-list');
-
-    // creating the inner HTML of the editable list element
-    productListContainer.innerHTML = `
-      <h3>${title}</h3>
-      <ul class="item-list">
-      </ul>
-      <div id="fields-${this.identifier}">
-        ${listFields?.map(field => {
-          const classname = field.toLocaleLowerCase().replace(' ', '-');
-          return `
-            <div class="input-field">
-              <label for="${classname}">${field}</label>
-              <input name="${classname}" class="${classname}" type="text">
-            </div>
-          `;
-        }).join('')}
-        <button class="editable-list-add-item">${addItemText}</button>
-      </div>
-    `;
-
-    // binding methods
-    this.addListItem = this.addListItem.bind(this);
-    this.handleRemoveItemListeners = this.handleRemoveItemListeners.bind(this);
-    this.removeListItem = this.removeListItem.bind(this);
-
-    // appending the container to the shadow DOM
-    shadow.appendChild(productListContainer);
-  }
-
-  // add items to the list
-  addListItem() {
-    if (!this.shadowRoot) { console.error('shadow DOM not available yet in addListItem'); return; };
-    const inputs: NodeListOf<HTMLDivElement> | null = this.shadowRoot.querySelectorAll(`#fields-${this.identifier} .input-field`);
-
-    // extract data and render
-    const ul = document.createElement('ul');
-    inputs.forEach(e => {
-      const label = e.children[0] as HTMLLabelElement;
-      const input = e.children[1] as HTMLInputElement;
-      const fieldKey = label.innerHTML;
-      const fieldValue = input.value;
-      
-      const li = document.createElement('li');
-      li.textContent = `${fieldKey}: ${fieldValue}`;
-      ul.appendChild(li);
-    });
-
-    const rootLi = document.createElement('li');
-    rootLi.appendChild(ul);
-    
-    const removeButton = document.createElement('button');
-    removeButton.classList.add('editable-list-remove-item', 'icon');
-    removeButton.innerHTML = '❌';
-    
-    const cartButton = document.createElement('button');
-    cartButton.classList.add('editable-list-add-cart', 'icon');
-    cartButton.innerHTML = '🛒';
-
-    if (this.products) {
-      const childrenLength = this.products.children.length;
-      this.products.appendChild(rootLi);
-      this.products.children[childrenLength].appendChild(removeButton);
-      this.products.children[childrenLength].appendChild(cartButton);
-    } else {
-      console.error('products not found in shadow DOM');
-    }
-    this.handleRemoveItemListeners([removeButton]);
-    this.handleAddCartListeners([cartButton]);
-  }
-
-  // fires after the element has been attached to the DOM
-  connectedCallback() {
-    if (!this.shadowRoot) { console.error('shadow DOM not available yet in ConnectedCallback'); return; };
-
-    const removeElementButtons = [...this.shadowRoot.querySelectorAll('.editable-list-remove-item')];
-    const addElementButton = this.shadowRoot.querySelector('.editable-list-add-item');
-
-    this.products = this.shadowRoot.querySelector('.item-list');
-
-    this.handleRemoveItemListeners(removeElementButtons);
-    addElementButton?.addEventListener('click', this.addListItem, false);
-  }
-
-  // gathering data from element attributes
-  get title() {
-    return this.getAttribute('title') || '';
-  }
-
-  get items(): string[] {
-    const items: string[] = [];
-
-    [...this.attributes].forEach(attr => {
-      if (attr.name.includes('list-item')) {
-        items.push(attr.value);
-      }
-    });
-
-    return items;
-  }
-
-  get fields(): string[] {
-    const fields: string[] = [];
-
-    [...this.attributes].forEach(attr => {
-      if (attr.name.includes('field')) {
-        fields.push(attr.value);
-      }
-    });
-
-    return fields;
-  }
-
-  get addItemText() {
-    return this.getAttribute('add-item-text') || '';
-  }
-
-  handleRemoveItemListeners(arrayOfElements: Element[]) {
-    arrayOfElements.forEach(element => {
-      element.addEventListener('click', this.removeListItem, false);
-    });
-  }
-
-  removeListItem(e: Event) {
-    const parent = ( <HTMLElement>( <HTMLElement>e.target ).parentNode );
-    parent.remove();
-  }
-
-  handleAddCartListeners(arrayOfElements: Element[]) {
-    arrayOfElements.forEach(element => {
-      element.addEventListener('click', this.addToCart, false);
-    });
-  }
-
-  addToCart(e: Event) {
-    // TODO: Find Shopping Cart List
-    // TODO: Add to Shopping Cart List
-    // const parent = ( <HTMLElement>( <HTMLElement>e.target ).parentNode );
-    // parent.remove();
-  }
+  // ### Add to cart ###
+  document.querySelectorAll('.add-to-cart').forEach(e => {
+    e.addEventListener('click', addItemToCart);
+  });
+}
+function addProductAndRender() {
+  const id = (document.querySelector('#product-id') as HTMLInputElement).value;
+  const price = parseFloat((document.querySelector('#price') as HTMLInputElement).value);
+  const qty = parseInt((document.querySelector('#qty') as HTMLInputElement).value);
+  addProduct(id, price, qty);
+  renderProducts();
+}
+function renderCart() {
+  let content = '';
+  Object.entries(cart).forEach(e => {
+    const id = e[0];
+    const qty = e[1];
+    const price = stock[id].price * qty;
+    content += `
+      <li value="${id}">
+        <p>Product ID: ${id}</p>
+        <p>Qty: ${qty}</p>
+        <p>Cost: $${price.toFixed(2)}</p>
+        <button class="remove-from-cart">➖</button>
+      </li>
+    `
+  });
+  const target = document.querySelector('#cart')!;
+  target.innerHTML = content;
+  
+  // ### Remove from cart ###
+  document.querySelectorAll('.remove-from-cart').forEach(e => {
+    e.addEventListener('click', removeItemFromCart);
+  });
+}
+function addItemToCart(event: Event) {
+  const btn = event.target as Element;
+  const id = btn.parentElement?.getAttribute('value')!;
+  addToCart(id, 1);
+  renderCart();
+}
+function removeItemFromCart(event: Event) {
+  const btn = event.target as Element;
+  const id = btn.parentElement?.getAttribute('value')!;
+  removeFromCart(id, 1);
+  renderCart();
 }
 
-// let the browser know about the custom element
-customElements.define('editable-list', ProductList);
+// ### Clear cart ###
+function removeAllFromCart() {
+  clearCart();
+  renderCart();
+}
+
+// ### Checkout ###
+function checkoutCart() {
+  const total = calculateTotal();
+  const code = (document.querySelector('#code') as HTMLInputElement).value;
+  const grandTotal = applyShippingDiscount(code, total);
+  let message = `Total cost: $${grandTotal}`;
+  if (grandTotal !== total) {
+    message = `Total cost: $${grandTotal} with discount applied! 🎉`;
+  }
+  alert(message);
+}
+
+document.querySelector('#add-product')?.addEventListener('click', addProductAndRender);
+document.querySelector('#clear-cart')?.addEventListener('click', removeAllFromCart);
+document.querySelector('#checkout')?.addEventListener('click', checkoutCart);
