@@ -12,50 +12,66 @@ let cart: Record<string, number> = {};
  * @param productId - The ID of the product.
  * @param price - The price of the product.
  * @param stockCount- The number of items available in stock.
+ * @returns The updated product.
  */
 export function addProduct(
   productId: string,
   price: number,
   stockCount: number
-): void {
-  stock[productId] = { id: productId, price, stock: stockCount };
+): Product {
+  const product = { id: productId, price, stock: stockCount };
+  stock[productId] = product;
+  return product;
 }
 
 /**
  * Updates the quantity of a product in the cart.
  * @param productId - The ID of the product.
  * @param quantity - The quantity to add (positive) or remove (negative) from the cart.
+ * @returns The updated cart.
  */
-function updateCart(productId: string, quantity: number): void {
+function updateCart(
+  productId: string,
+  quantity: number
+): Record<string, number> {
   cart[productId] = (cart[productId] || 0) + quantity;
   if (cart[productId] <= 0) {
     delete cart[productId];
   }
+  return cart;
 }
 
 /**
  * Adds a specified quantity of a product to the cart.
  * @param productId - The ID of the product.
  * @param quantity - The quantity of the product to add.
+ * @returns The updated cart.
  */
-export function addToCart(productId: string, quantity: number): void {
+export function addToCart(
+  productId: string,
+  quantity: number
+): Record<string, number> {
   const product = stock[productId];
   if (!product || product.stock < quantity) {
     throw new Error("Insufficient stock");
   }
-  updateCart(productId, quantity);
+  return updateCart(productId, quantity);
 }
 
 /**
  * Removes a specified quantity of a product from the cart.
  * @param productId - The ID of the product.
  * @param quantity - The quantity of the product to remove.
+ * @returns The updated cart.
  */
-export function removeFromCart(productId: string, quantity: number): void {
+export function removeFromCart(
+  productId: string,
+  quantity: number
+): Record<string, number> {
   if (!cart[productId] || cart[productId] < quantity) {
     throw new Error("Cannot remove item from cart");
   }
-  updateCart(productId, -quantity);
+  return updateCart(productId, -quantity);
 }
 
 /**
@@ -68,13 +84,14 @@ export function calculateTotal(): number {
     return total + product.price * quantity;
   }, 0);
 }
+
 /**
  * Clears the shopping cart by removing all items.
- *
- * @return {void} No return value.
+ * @returns The cleared cart (empty object).
  */
-export function clearCart(): void {
+export function clearCart(): Record<string, number> {
   cart = {};
+  return cart;
 }
 
 /**
