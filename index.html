@@ -10,58 +10,22 @@
     <div id="app">
       <h1>The Button Dashboard</h1>
       <p class="read-the-docs">
-        Use the buttons below to test various ecommerce.ts functions:
+        Use the elements below to test various ecommerce.ts functions:
       </p>
-  
-      <div class="add-product-container">
-        <h2>Add Products</h2>
-        <form id="product-form">
-          <div class="form-example">
-            <label for="product-id">Product ID: </label>
-            <input type="text" name="product-id" id="product-id" required />
-          </div>
-          <div class="form-example">
-            <label for="price">Price: </label>
-            <input type="number" min="0" step="0.01" name="price" id="price" required />
-          </div>
-          <div class="form-example">
-            <label for="stock">Stock: </label>
-            <input type="number" min="0" step="1" name="stock" id="stock" required />
-          </div>
-          <div class="form-example">
-            <input type="submit" value="Add Product" id="add-product" />
-          </div>
-        </form>
-      </div>
-
-      <div class="products-container">
-        <h2>All Products</h2>
-        <ul id="products">
-          <li>
-            <p>Product ID: X</p>
-            <p>Price: Y</p>
-            <p>Stock: Z</p>
-            <button id="addToCart">Add To Cart</button>
-          </li>
-        </ul>
-      </div>
-
-      <div class="cart-container">
-        <h2>Cart</h2>
-        <ul id="cart">
-          <li>
-            <p>Product ID: X</p>
-            <p>Price: Y</p>
-            <p>Qty: Z</p>
-            <button id="removeFromCart">Remove From Cart</button>
-          </li>
-        </ul>
-        <button id="clearCart">Clear Cart</button>
-
-        <div class="checkout-container">
-          <button id="checkout">Checkout</button>
-        </div>
-      </div>
+      <editable-list
+          title="Products"
+          field-0="Name"
+          field-1="Price"
+          field-2="Qty"
+          add-item-text="Add Product"
+      >
+      </editable-list>
+      <editable-list
+          title="Cart"
+          add-item-text="Clear Cart"
+          add-item-text-2="Checkout"
+      >
+      </editable-list>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
