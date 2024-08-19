@@ -16,9 +16,9 @@ function renderProducts() {
   Object.values(stock).forEach(p => {
     content += `
       <li value="${p.id}">
-        <p>Product ID: ${p.id}</p>
+        <p>ID: ${p.id}</p>
         <p>Price: $${p.price}</p>
-        <p>Quantity: ${p.stock}</p>
+        <p>Qty: ${p.stock}</p>
         <button class="add-to-cart">➕</button>
       </li>
     `
@@ -46,7 +46,7 @@ function renderCart() {
     const price = stock[id].price * qty;
     content += `
       <li value="${id}">
-        <p>Product ID: ${id}</p>
+        <p>ID: ${id}</p>
         <p>Qty: ${qty}</p>
         <p>Cost: $${price.toFixed(2)}</p>
         <button class="remove-from-cart">➖</button>
