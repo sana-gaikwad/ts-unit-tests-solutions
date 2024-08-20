@@ -43,7 +43,7 @@ describe("E-commerce System", () => {
     addToCart("product1", 2);
     addToCart("product2", 2);
     const sum = calculateTotal();
-    expect(sum).toEqual(590);
+    expect(sum).toBe(590);
   });
 
   it("should apply free shipping if the total cost is above $500", () => {
