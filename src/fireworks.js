@@ -7,7 +7,6 @@ let fireworks = [];
 
 function windowResized() {
   resizeCanvas(window.innerWidth, window.innerHeight);
-  this.preStar();
 }
 
 function setup() {
@@ -24,6 +23,9 @@ function setup() {
 function draw() {
   background(36, 36, 36);
   noStroke();
+  if (document.querySelector('#secret').getAttribute('start') !== 'true') {
+    return;
+  }
 
   if (0 === frameCount % 100) {
 

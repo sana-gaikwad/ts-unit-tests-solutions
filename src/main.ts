@@ -9,7 +9,6 @@ import {
   clearCart,
   applyShippingDiscount
 } from './ecommerce'
-// import './fireworks'
 
 // ### Add products ###
 function renderProducts() {
@@ -90,7 +89,7 @@ function checkoutCart() {
   if (grandTotal !== total) {
     message = `Total cost: $${grandTotal} with discount applied! 🎉`;
   }
-  // startAnimation();
+  document.querySelector('#secret')?.setAttribute('start', 'true');
   alert(message);
 }
 
