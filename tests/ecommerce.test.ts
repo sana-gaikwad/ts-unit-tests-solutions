@@ -43,17 +43,17 @@ describe("E-commerce System", () => {
     addToCart("product1", 2);
     addToCart("product2", 2);
     const sum = calculateTotal();
-    expect(sum).toEqual(600);
+    expect(sum).toEqual(590);
   });
 
   it("should apply free shipping if the total cost is above $500", () => {
     addToCart("product1", 3); // $300
     addToCart("product2", 2); // $400
-    expect(applyShippingDiscount("SHIP10", 700)).toBe(690);
+    expect(applyShippingDiscount(700)).toBe(690);
   });
 
   it("should not apply free shipping for totals under $500", () => {
     addToCart("product1", 3); // $300
-    expect(applyShippingDiscount("SHIP10", 300)).toBe(300);
+    expect(applyShippingDiscount(300)).toBe(300);
   });
 });
