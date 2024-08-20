@@ -91,6 +91,7 @@ function checkoutCart() {
   else {
     message = `Total cost: $${total} with discount applied! 🎉`;
   }
+  document.querySelector('#secret')?.setAttribute('start', 'true');
   alert(message);
 }
 
