@@ -136,19 +136,19 @@ class FireWork {
 
     if (0 == this.afterImages.length) {
       if (0 === this.next) {
-    
+
         this.next = this.frame + Math.round(this.exDelay);
       } else if (this.next === this.frame) {
-    
+
         for (let i = 0; i < this.ball; i++) {
-      
+
           let r = random(0, 360);
-      
+
           let s = random(0.1, 0.9);
           let vx = Math.cos((r * Math.PI) / 180) * s * this.large;
           let vy = Math.sin((r * Math.PI) / 180) * s * this.large;
           this.explosions.push(new FireWork(this.x, this.y, vx, vy, this.exStop));
-      
+
           let cr = random(0, 360);
           let cs = random(0.9, 1);
           let cvx = Math.cos((cr * Math.PI) / 180) * cs * this.large;
@@ -164,13 +164,13 @@ class FireWork {
   explosion() {
     for (let ex of this.explosions) {
       ex.frame++;
-  
+
       if (2 === ex.getType) {
         this.explosions = this.explosions.filter((n) => n !== ex);
         continue;
       }
 
-  
+
       if (0 === Math.round(random(0, 32))) {
         ex.afterImages.push(new Afterimage(this.r, this.g, this.b, ex.x, ex.y, ex.w, ex.a));
       }
@@ -183,7 +183,7 @@ class FireWork {
         ai.exImage();
       }
 
-  
+
       this.update(ex.x, ex.y, ex.w, ex.a);
       ex.x += ex.vx;
       ex.y += ex.vy;
