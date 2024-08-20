@@ -1,6 +1,6 @@
 # ts-unit-tests-solutions
 
-TypeScript project using Vite for rapid development. Unit tests are written in TypeScript and run with Vitest. est coverage metrics are included to ensure code quality.
+TypeScript project using Vite for rapid development. Unit tests are written in TypeScript and run with Vitest. Test coverage metrics are included to ensure code quality.
 
 
 ## Getting Started
